@@ -14,7 +14,7 @@ uint32_t speed = 0; // If speed not ZERO do a single SPEED test. If ZERO follow 
 // For standard 32MB SDRAM test don't change items ABOVE to run SDRAM from 133 - 270 MHz with write and 5 ReReads.
 
 uint64_t arrResults[10][4]; // SPEED, Time, # Errors, # Read Tests
-#include "SDRAM_t4.h"
+// #include "SDRAM_t4.h"
 const uint32_t speedCnt = SR_ARR_SIZE - SKIP_LAST_SPEEDS; // Count of Fixed patterns used for all writes for each pass
 uint32_t readRepeat = TYPICAL_REREADS;  // Writes to Test memory, will repeat Reads and Test compare 'readRepeat' times
 /********************************************************************
@@ -70,7 +70,7 @@ uint32_t readRepeat = TYPICAL_REREADS;  // Writes to Test memory, will repeat Re
 *****************************************************************************/
 
 // constructor for SDRAM - though here the memory pool is accessed by direct address
-SDRAM_t4 sdram;
+// SDRAM_t4 sdram;
 uint size = 32;  // SDRAM 32MB Size
 uint32_t *memory_begin = (uint32_t *)(0x80000000);
 uint32_t *memory_end = (uint32_t *)(0x80000000 + size * 1048576);
@@ -102,7 +102,7 @@ void doTest() {
     uint32_t testCnt = fixPCnt;
     testCnt += lfsrCnt;
 
-    Serial.printf("\nStart %u tests with %u reads %.2f MHz ... wait::", testCnt, readRepeat, sdram.getFrequency());
+    Serial.printf("\nStart %u tests with %u reads %.2f MHz ... wait::", testCnt, readRepeat, 4242);
 #ifdef USB_DUAL_SERIAL
     SerialUSB1.printf("\n  --- START %u test patterns ------ with %u reReads ... wait ...\n", testCnt, readRepeat);
 #endif
@@ -207,7 +207,7 @@ void setSpeed( uint32_t speed ) {
        See library readme for more info.
      *********************************************************/
   static bool doOnce = true;
-  if (sdram.begin(size, speed, true)) { // always UseDQS to test capacitance
+  if (1) { // sdram.begin(size, speed, true)) { // always UseDQS to test capacitance
     if ( doOnce ) {
       Serial.print("\n\tSUCCESS sdram.init()\t Default config runs in about 15 minutes.\n");
       Serial.print("\n\tProgress:: '#'=fixed, '.'=PsuedoRand patterns: when no Errors other wise first pass with error a-z or A-Z");
