@@ -14,7 +14,9 @@ uint32_t speed = 0; // If speed not ZERO do a single SPEED test. If ZERO follow 
 // For standard 32MB SDRAM test don't change items ABOVE to run SDRAM from 133 - 270 MHz with write and 5 ReReads.
 
 uint64_t arrResults[10][4]; // SPEED, Time, # Errors, # Read Tests
-// #include "SDRAM_t4.h"
+
+extern "C" bool sdram_begin(uint8_t external_sdram_size, uint8_t clock, uint8_t useDQS);
+
 const uint32_t speedCnt = SR_ARR_SIZE - SKIP_LAST_SPEEDS; // Count of Fixed patterns used for all writes for each pass
 uint32_t readRepeat = TYPICAL_REREADS;  // Writes to Test memory, will repeat Reads and Test compare 'readRepeat' times
 /********************************************************************
@@ -69,8 +71,6 @@ uint32_t readRepeat = TYPICAL_REREADS;  // Writes to Test memory, will repeat Re
   SDRAM One Scan CAP test Complete {v1.2} :Note tested CAP here pF=
 *****************************************************************************/
 
-// constructor for SDRAM - though here the memory pool is accessed by direct address
-// SDRAM_t4 sdram;
 uint size = 32;  // SDRAM 32MB Size
 uint32_t *memory_begin = (uint32_t *)(0x80000000);
 uint32_t *memory_end = (uint32_t *)(0x80000000 + size * 1048576);
@@ -184,7 +184,7 @@ void setup() {
     Serial.println();
     ii++;
   }
-  Serial.printf("\n\tSDRAM One Scan CAP test Complete {v1.4} :Note tested CAP here pF=\n");
+  Serial.printf("\n\tSDRAM One Scan CAP test Complete {v1.5} :Note tested CAP here pF=\n");
   if ( showTableCSV ) {
     ii = 0;
     Serial.printf("\nTest Table: %u tests with %u ReReads at F_CPU_ACTUAL %u Mhz:\n", lfsrCnt + fixPCnt, readRepeat, F_CPU_ACTUAL / 1000000);
@@ -207,7 +207,7 @@ void setSpeed( uint32_t speed ) {
        See library readme for more info.
      *********************************************************/
   static bool doOnce = true;
-  if (1) { // sdram.begin(size, speed, true)) { // always UseDQS to test capacitance
+  if ( sdram_begin(size, speed, true)) { // always UseDQS to test capacitance
     if ( doOnce ) {
       Serial.print("\n\tSUCCESS sdram.init()\t Default config runs in about 15 minutes.\n");
       Serial.print("\n\tProgress:: '#'=fixed, '.'=PsuedoRand patterns: when no Errors other wise first pass with error a-z or A-Z");
